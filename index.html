@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="2010—2025考研英语二真题精读、逐词朗读与生词默写">
+  <title>研词｜2010—2025 考研英语二真题精读</title>
+  <link rel="stylesheet" href="styles.css?v=20261104-8">
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-button mobile-only" id="menuButton" aria-label="打开目录">☰</button>
+    <a class="brand" href="#">
+      <span class="brand-mark">研</span>
+      <span><strong>研词</strong><small>真题精读</small></span>
+    </a>
+    <div class="compact-actions">
+      <button class="compact-tool-button" id="toolsButton" aria-expanded="false" aria-controls="topActions">功能</button>
+      <button class="compact-tool-button" id="vocabButton" aria-expanded="false" aria-controls="vocabPanel">生词</button>
+    </div>
+    <div class="top-actions" id="topActions">
+      <label class="year-picker" for="yearSelect"><span>年份</span><select id="yearSelect" aria-label="选择真题年份"></select></label>
+      <button class="control-button" id="toggleGloss">词义 <span>开</span></button>
+      <button class="control-button" id="toggleTranslation">段译 <span>开</span></button>
+      <button class="control-button" id="toggleParagraphUsage">段落搭配 <span>关</span></button>
+      <button class="control-button" id="toggleOptionTranslation">完形选项释义 <span>关</span></button>
+      <button class="control-button study-launch" id="studyButton">背单词</button>
+      <button class="primary-button" id="exportButton">导出生词默写 PDF</button>
+    </div>
+  </header>
+  <button class="drawer-backdrop" id="drawerBackdrop" aria-label="关闭已打开的面板"></button>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="exam-card">
+        <div class="year" id="yearValue">2025</div>
+        <div><strong>全国硕士研究生招生考试</strong><span>英语（二）· 真题</span></div>
+      </div>
+      <nav id="sectionNav" aria-label="真题目录"></nav>
+      <div class="legend">
+        <p><i class="dot yellow"></i>重点词</p>
+        <p><i class="dot blue"></i>短语 / 熟词僻义</p>
+        <p><i class="dot red"></i>点击单词即可朗读</p>
+      </div>
+    </aside>
+
+    <main class="reader">
+      <div class="reader-head">
+        <div>
+          <p class="eyebrow" id="sectionEyebrow">SECTION II · READING COMPREHENSION</p>
+          <h1 id="sectionTitle">Text 1</h1>
+          <p id="sectionIntro" class="section-intro"></p>
+        </div>
+        <div class="progress-ring" aria-label="阅读进度">
+          <span id="progressValue">0%</span>
+        </div>
+      </div>
+
+      <section class="paper" id="paper" aria-live="polite"></section>
+      <div class="page-nav">
+        <button id="prevButton">← 上一篇</button>
+        <button id="nextButton">下一篇 →</button>
+      </div>
+    </main>
+
+    <aside class="vocab-panel" id="vocabPanel">
+      <div class="vocab-head">
+        <div>
+          <span class="mini-label">MY WORDS</span>
+          <h2>我的生词</h2>
+        </div>
+        <span class="count" id="wordCount">0</span>
+      </div>
+      <p class="empty-hint" id="emptyHint">点一下正文里的单词，再点星标收藏。生词只保存在你的浏览器中。</p>
+      <div class="vocab-list" id="vocabList"></div>
+      <p class="selection-hint" id="selectionHint"></p>
+      <div class="vocab-actions">
+        <button class="clear-button" id="selectAllWords">全选</button>
+        <button class="clear-button" id="unselectAllWords">取消全选</button>
+      </div>
+      <div class="vocab-practice-actions">
+        <button id="dictationButton">默写练习</button>
+        <button id="readAloudButton">顺序朗读</button>
+      </div>
+      <button class="clear-button" id="clearWords">清空生词本</button>
+    </aside>
+  </div>
+
+  <div class="word-popover" id="wordPopover" role="dialog" aria-hidden="true">
+    <div class="popover-main">
+      <button class="speak-button" id="popoverSpeak" title="朗读">▶</button>
+      <div><strong id="popoverWord"></strong><span id="popoverPhonetic"></span><span class="popover-pos" id="popoverPartOfSpeech"></span></div>
+      <button class="star-button" id="popoverStar" title="标为生词">☆</button>
+    </div>
+    <section class="dictionary-section context-meaning-card">
+      <h4>本题语境义</h4>
+      <p id="popoverMeaning"></p>
+    </section>
+    <section class="dictionary-section common-meaning-card">
+      <h4>词性与常用中文义</h4>
+      <div class="meaning-list" id="popoverCommonMeanings"></div>
+    </section>
+    <section class="dictionary-section" id="popoverUsageSection">
+      <h4>ENGLISH EXPLANATION</h4>
+      <div class="definition-list" id="popoverDefinitions"><span class="dictionary-loading">英文释义加载中…</span></div>
+    </section>
+    <section class="dictionary-section" id="popoverDefinitionSection">
+      <h4>语法用法 · 常见搭配 · 固定短语</h4>
+      <div class="usage-list" id="popoverUsage"><span class="dictionary-loading">用法加载中…</span></div>
+    </section>
+    <section class="dictionary-section exam-context-card" id="popoverExamContextSection">
+      <h4>真题语境</h4>
+      <p class="popover-example" id="popoverExample"></p>
+      <p class="popover-example-translation" id="popoverExampleTranslation"></p>
+    </section>
+    <small>点击左上角可重播发音；词典结果会缓存在本机</small>
+  </div>
+
+  <div class="modal" id="exportDialog" aria-hidden="true">
+    <section class="modal-card export-card" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+      <div class="modal-head"><div><span class="mini-label">DICTATION PDF</span><h2 id="exportTitle">导出生词默写</h2></div><button class="modal-close" data-close-modal="exportDialog" aria-label="关闭">×</button></div>
+      <div class="export-options">
+        <fieldset><legend>默写方向</legend><label><input type="radio" name="dictationDirection" value="en-zh" checked> 左侧英文，右侧默写中文</label><label><input type="radio" name="dictationDirection" value="zh-en"> 左侧中文，右侧默写英文</label></fieldset>
+        <label class="check-line"><input type="checkbox" id="includeAnswerSheet" checked> 导出中英参考释义页</label>
+      </div>
+      <div class="modal-list-head"><strong>选择导出的生词</strong><span id="exportSelectionCount"></span></div>
+      <div class="word-select-list" id="exportWordList"></div>
+      <div class="modal-actions"><button class="secondary-button" id="exportSelectAll">全选</button><button class="secondary-button" id="exportSelectNone">取消全选</button><button class="primary-button" id="confirmExport">生成并打印</button></div>
+    </section>
+  </div>
+
+  <div class="modal" id="studyDialog" aria-hidden="true">
+    <section class="modal-card study-card" role="dialog" aria-modal="true" aria-labelledby="studyTitle">
+      <div class="modal-head"><div><span class="mini-label">EBBINGHAUS REVIEW</span><h2 id="studyTitle">艾宾浩斯背单词</h2></div><button class="modal-close" data-close-modal="studyDialog" aria-label="关闭">×</button></div>
+      <div id="studySetup">
+        <p class="study-intro">选择要背诵的生词。系统按 1、2、4、7、15、30 天安排复习，到期词优先出现。</p>
+        <div class="word-select-list" id="studyWordList"></div>
+        <div class="modal-actions"><button class="secondary-button" id="studySelectDue">只选到期词</button><button class="secondary-button" id="studySelectAll">全选</button><button class="primary-button" id="startStudy">开始背诵</button></div>
+      </div>
+      <div id="studySession" hidden>
+        <div class="study-progress"><span id="studyProgressText"></span><div><i id="studyProgressBar"></i></div></div>
+        <article class="study-word-card">
+          <button class="study-speak" id="studySpeak" aria-label="朗读单词">▶</button>
+          <h3 id="studyWord"></h3>
+          <p id="studyPhonetic"></p>
+          <p class="study-word-meta" id="studyWordMeta"></p>
+          <p class="study-example" id="studyExample"></p>
+          <p class="study-example-translation" id="studyExampleTranslation"></p>
+          <div class="study-answer" id="studyAnswer" hidden><div id="studyMeanings"></div></div>
+        </article>
+        <button class="reveal-button" id="revealStudyAnswer">显示释义</button>
+        <div class="study-rating" id="studyRating" hidden><button data-rating="again">还不熟</button><button data-rating="known">记住了</button></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="dictationDialog" aria-hidden="true">
+    <section class="modal-card dictation-card" role="dialog" aria-modal="true" aria-labelledby="dictationTitle">
+      <div class="modal-head"><div><span class="mini-label">VOCABULARY DICTATION</span><h2 id="dictationTitle">生词默写练习</h2></div><button class="modal-close" data-close-modal="dictationDialog" aria-label="关闭">×</button></div>
+      <div id="dictationSetup">
+        <div class="dictation-settings">
+          <fieldset><legend>出题方向</legend><label><input type="radio" name="practiceDirection" value="zh-en" checked> 看中文写英文</label><label><input type="radio" name="practiceDirection" value="en-zh"> 看英文写中文</label></fieldset>
+        </div>
+        <div class="modal-list-head"><strong>选择需要默写的生词</strong><span id="dictationSelectionCount"></span></div>
+        <div class="word-select-list" id="dictationWordList"></div>
+        <div class="modal-actions"><button class="secondary-button" id="dictationSelectAll">全选</button><button class="primary-button" id="startDictation">开始默写</button></div>
+      </div>
+      <div id="dictationSession" hidden>
+        <div class="study-progress"><span id="dictationProgressText"></span><div><i id="dictationProgressBar"></i></div></div>
+        <article class="dictation-practice-card">
+          <span class="dictation-prompt-label" id="dictationPromptLabel"></span>
+          <h3 id="dictationPrompt"></h3>
+          <button class="inline-speak" id="dictationSpeak" aria-label="朗读提示词">▶ 朗读</button>
+          <div id="keyboardPractice">
+            <input id="dictationInput" type="text" autocomplete="off" spellcheck="false" placeholder="请在这里输入答案">
+          </div>
+          <div class="dictation-reference" id="dictationReference" hidden></div>
+        </article>
+        <button class="reveal-button" id="checkDictation">检查 / 显示答案</button>
+        <div class="study-rating" id="dictationRating" hidden><button data-dictation-rating="again">记错了</button><button data-dictation-rating="known">记对了</button></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="readAloudDialog" aria-hidden="true">
+    <section class="modal-card read-aloud-card" role="dialog" aria-modal="true" aria-labelledby="readAloudTitle">
+      <div class="modal-head"><div><span class="mini-label">SEQUENTIAL READING</span><h2 id="readAloudTitle">生词顺序朗读</h2></div><button class="modal-close" data-close-modal="readAloudDialog" aria-label="关闭">×</button></div>
+      <p class="study-intro">勾选任意生词后，系统会按列表顺序逐个自动朗读。</p>
+      <div class="word-select-list" id="readAloudWordList"></div>
+      <div class="read-now" id="readNow" hidden><span id="readProgress"></span><strong id="readCurrentWord"></strong><b id="readCurrentMeaning"></b><em id="readCurrentPhonetic"></em></div>
+      <div class="modal-actions"><button class="secondary-button" id="readSelectAll">全选</button><button class="secondary-button" id="stopReading">停止</button><button class="primary-button" id="startReading">开始顺序朗读</button></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <section class="print-sheet" id="printSheet"></section>
+
+  <script src="data.js"></script>
+  <script src="years-data.js"></script>
+  <script src="docx-years-data.js"></script>
+  <script src="docx-translations.js"></script>
+  <script src="paragraph-translations.js?v=20261104-1"></script>
+  <script src="historical-glossary.js"></script>
+  <script src="docx-glossary.js"></script>
+  <script src="exam-missing-glossary.js"></script>
+  <script src="exact-glossary.js"></script>
+  <script src="cloze-translations.js"></script>
+  <script src="cloze-phrase-overrides.js"></script>
+  <script src="offline-phonetics.js?v=20261104-4"></script>
+  <script src="offline-dictionary.js?v=20261104-4"></script>
+  <script src="supplement-data.js"></script>
+  <script src="supplement-patches.js?v=20261104-4"></script>
+  <script src="app.js?v=20261105-3"></script>
+</body>
+</html>

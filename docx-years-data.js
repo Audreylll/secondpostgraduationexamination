@@ -1,0 +1,1 @@
+window.DOCX_EXAMS = {};

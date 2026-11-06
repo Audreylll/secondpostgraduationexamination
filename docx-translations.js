@@ -1,0 +1,1 @@
+window.CLOZE_TRANSLATIONS = {};
